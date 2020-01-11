@@ -16,25 +16,24 @@ class MPO:
 
     def __init__(self,tensors,backend=None):
         self.nodes = [Node(tensors[n],
-                           name="node{}".format(n),
-                           axis_names=self.axis_names(n,len(tensors)),
+                           name='node{}'.format(n),
+                           axis_names= ['bond {}'.format(n), 'sp', 's', 'bond {}'.format(n+1)],
                            backend=backend)
                       for n in range(len(tensors))]
         self.backend = backend
 
-    def axis_names(self,n,L):
+    def _axis_names(self,n,L):
         if 0<n<L-1:
-            return ["bond {}".format(n), "sp", "s", "bond {}".format(n+1)]
+            return 
         elif n==0:
-            return ["s'","s","bond {}".format(n+1)]
+            return ['sp','s','bond {}'.format(n+1)]
         else:
-            return ["bond {}".format(n), "s'","s"]
+            return ['bond {}'.format(n), 'sp','s']
 
     def __len__(self):
         return len(self.nodes)
 
-
-def tfising_mpo(h,J,L,backend="numpy"):
+def tfising_mpo(h,J,L,backend='numpy'):
     """
     generate a finite MPO representing the transverse field
     Ising model.
@@ -47,11 +46,12 @@ def tfising_mpo(h,J,L,backend="numpy"):
                      [sz,   np.zeros((2,2)), np.zeros((2,2))],
                      [h*sx, J*sz,            Id]])
     h_bond=h_bond.transpose((0,2,3,1))
-    LH=np.array([0,0,1])
-    RH=np.array([1,0,0])
+    LH=np.array([0,0,1]).reshape(( 1,3 ))
+    RH=np.array([1,0,0]).reshape(( 3,1 ))
 
-    mpo_tensors = [np.tensordot(LH,h_bond,axes=[[0],[0]])]
-    mpo_tensors.extend([np.copy(h_bond) for i in range(L)])
-    mpo_tensors.append(np.tensordot(h_bond,RH,axes=[[-1],[0]]))
+    mpo_tensors = ( [np.tensordot(LH,h_bond,axes=[[-1],[0]])] +
+                    [np.copy(h_bond) for i in range(1,L-1)] +
+                    [ np.tensordot(h_bond,RH,axes=[[-1],[0]]) ] )
+
     return MPO(mpo_tensors,backend=backend)
 

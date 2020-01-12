@@ -101,3 +101,20 @@ class LocalHam():
         elif self.pos < pos:
             self._shift_position_right(pos)
 
+
+    def energy(self):
+        """
+        Measure the energy expectation value by completing the network contraction.
+        """
+        E = self.renvs[-1]
+        self.psi.position(self.pos)
+        for i in [self.pos+1,self.pos]:
+            nodes = [E,
+                     self.psi.nodes[i],
+                     self.H.nodes[i],
+                     tn.conj(self.psi.nodes[i])]
+            E = tn.ncon( nodes, [(1,3,5),(-1,2,1),(-2,2,4,3),(-3,4,5)],
+                         backend=self.backend)
+
+        E = tn.ncon([self.lenvs[-1],E], [(1,2,3),(1,2,3)])
+        return E.tensor.item()

@@ -33,25 +33,3 @@ class MPO:
     def __len__(self):
         return len(self.nodes)
 
-def tfising_mpo(h,J,L,backend='numpy'):
-    """
-    generate a finite MPO representing the transverse field
-    Ising model.
-    """
-    sz=np.array([[1,0],[0,-1]])
-    sx=np.array([[0,1],[1,0]])
-    Id=np.eye(2)
-
-    h_bond=np.array([[Id,   np.zeros((2,2)), np.zeros((2,2))],
-                     [sz,   np.zeros((2,2)), np.zeros((2,2))],
-                     [h*sx, J*sz,            Id]])
-    h_bond=h_bond.transpose((0,2,3,1))
-    LH=np.array([0,0,1]).reshape(( 1,3 ))
-    RH=np.array([1,0,0]).reshape(( 3,1 ))
-
-    mpo_tensors = ( [np.tensordot(LH,h_bond,axes=[[-1],[0]])] +
-                    [np.copy(h_bond) for i in range(1,L-1)] +
-                    [ np.tensordot(h_bond,RH,axes=[[-1],[0]]) ] )
-
-    return MPO(mpo_tensors,backend=backend)
-

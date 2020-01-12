@@ -13,8 +13,12 @@ def update_bond(psi,b,wf,ortho,**kwargs):
     S.set_tensor(S.tensor / tn.norm(S))
     if ortho=='left':
         U = U @ S
+        if psi.center_position == b+1:
+            psi.center_position -= 1
     elif ortho=='right':
         V = S @ V
+        if psi.center_position == b:
+            psi.center_position +=1
     else:
         raise ValueError("ortho must be 'left' or 'right'")
 
@@ -46,7 +50,7 @@ def dmrg(H,psi,sweeps,**kwargs):
                         wf_new,
                         ortho=dir,
                         max_bond_dim=sw['max_bond_dim'],
-                        max_trunc_err=sw['max_trunc_err'])
+                        max_truncation_error=sw['max_trunc_err'])
 
             if b==len(psi)-2:
                 dir = 'left'

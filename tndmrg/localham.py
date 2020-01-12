@@ -67,7 +67,7 @@ class LocalHam():
     def _shift_position_left(self,pos):
         self.lenvs = self.lenvs[0:pos+1]
         while self.pos > pos:
-            self.psi.position(self.pos+1)
+            self.psi.position(self.pos)
             nodes = [self.renvs[-1],
                      self.psi.nodes[self.pos+1],
                      self.H.nodes[self.pos+1],

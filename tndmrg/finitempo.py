@@ -22,14 +22,6 @@ class MPO:
                       for n in range(len(tensors))]
         self.backend = backend
 
-    def _axis_names(self,n,L):
-        if 0<n<L-1:
-            return 
-        elif n==0:
-            return ['sp','s','bond {}'.format(n+1)]
-        else:
-            return ['bond {}'.format(n), 'sp','s']
-
     def __len__(self):
         return len(self.nodes)
 

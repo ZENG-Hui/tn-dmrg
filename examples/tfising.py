@@ -4,9 +4,17 @@ from tndmrg.dmrg import dmrg
 import numpy as np
 
 def tfising_mpo(h,J,L,backend='numpy'):
-    """
-    generate a finite MPO representing the transverse field
-    Ising model.
+    """Generates a finite MPO representing the 1D transverse field
+    Ising model: H = h \\sigma^x_i + J \\sigma^z_i \\sigma^z_{i+1}.
+
+    Args:
+      h: Transverse field strength
+      J: spin-spin coupling.
+      L: chain length.
+      backend: which tensornetwork backend to use for the nodes.
+
+    Returns:
+      H: MPO representing the transverse-field Ising model.
     """
     sz=np.array([[1,0],[0,-1]])
     sx=np.array([[0,1],[1,0]])

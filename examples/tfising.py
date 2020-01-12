@@ -31,7 +31,7 @@ def product_state_mps(d,site_states, backend=None, dtype=np.float64):
         tensors[i][0,s,0]=1
     return mps.FiniteMPS(tensors, backend=backend)
 
-if __name__ == "main":
+if __name__ == '__main__':
     N=30
     J = -1
     h = -1
